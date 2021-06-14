@@ -350,7 +350,8 @@ maybe you need to adjust the calibration dates")
         Freqs <- c(freq, 1 - sum(freq))
         age[unknown.ages] <- node.time
         real.edge.length <- age[e1] - age[e2]
-        if (any(real.edge.length < 0)) return(-1e+100)
+        if (any(is.na(real.edge.length))) return(-Inf)
+        if (any(real.edge.length < 0)) return(-Inf)
         ## generate a matrix of branch length rates under each rate regime:
         B <- real.edge.length %*% t(rate)
         ## generate a matrix of likelihood values
@@ -384,7 +385,8 @@ maybe you need to adjust the calibration dates")
                if (Nb.rates == 1)
                    function(rate, node.time) log.lik.poisson(rate, node.time)
                else function(rate, node.time, freq) {
-                   if (sum(freq) > 1) return(-1e100)
+                   if (any(is.na(freq))) return(-Inf)
+                   if (sum(freq) > 1) return(-Inf)
                    ## rate.freq <- sum(c(freq, 1 - sum(freq)) * rate)
                    ## log.lik.poisson(rate.freq, node.time)
                    log.lik.poisson.discrete(rate, node.time, freq) # by SC
